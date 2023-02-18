@@ -1,0 +1,17 @@
+/*
+ * clock.s
+ *
+ *  Created on: Feb 13, 2023
+ *      Author: charlie
+ */
+
+
+		.data
+
+ClockCount:
+
+		.global ClockCount
+		.skip	3
+
+		.text
+

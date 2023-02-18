@@ -1,0 +1,43 @@
+
+sim-1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  0000003a  000000ae  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000003a  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	0a c0       	rjmp	.+20     	; 0x16 <boot>
+   2:	06 c0       	rjmp	.+12     	; 0x10 <proc2>
+   4:	00 00       	nop
+   6:	00 00       	nop
+	...
+
+0000000a <done>:
+   a:	18 95       	reti
+   c:	00 00       	nop
+	...
+
+00000010 <proc2>:
+  10:	00 00       	nop
+  12:	00 00       	nop
+  14:	08 95       	ret
+
+00000016 <boot>:
+  16:	2f ef       	ldi	r18, 0xFF	; 255
+  18:	34 e0       	ldi	r19, 0x04	; 4
+  1a:	2d bf       	out	0x3d, r18	; 61
+  1c:	3e bf       	out	0x3e, r19	; 62
+  1e:	09 d0       	rcall	.+18     	; 0x32 <proc1>
+  20:	f4 cf       	rjmp	.-24     	; 0xa <done>
+	...
+
+00000032 <proc1>:
+  32:	0d b7       	in	r16, 0x3d	; 61
+  34:	1e b7       	in	r17, 0x3e	; 62
+  36:	ec df       	rcall	.-40     	; 0x10 <proc2>
+  38:	08 95       	ret

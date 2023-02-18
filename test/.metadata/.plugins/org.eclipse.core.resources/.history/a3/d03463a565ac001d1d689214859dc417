@@ -1,0 +1,105 @@
+/*
+ * clock.s
+ *
+ *  Created on: Feb 13, 2023
+ *      Author: charlie
+ */
+
+#define __SFR_OFFSET 0
+
+#include "de1soc.h"
+
+		.data
+
+ClockCount:
+
+		.global ClockCount
+		.skip	3
+
+		.text
+
+ClockISR:	DEFISR(TM0INT)
+;
+; Update clock with 1 second
+;
+		push	zh							; save working registers
+		push	zl
+		push	r18
+		push	r17
+		push	r16
+		in		r17, SREG
+
+		ldi		zh, hi8(ClockCount)			; loat data ptr into z
+		ldi		zl, lo8(ClockCount)
+
+		ld		r16, z						; load seconds bcd
+
+		mov		r18, r16					; do lower digit
+		andi	r18, 0x0f					; mask digit
+		inc		r18							; incremnt
+		cpi		r18, 10						; is it 10 now
+		breq	1f							; if yes do upper digit
+
+		andi	r16, 0xf0					; mask upper digit
+		or		r16, r18						; copy lower digit
+		rjmp	9f							; done
+
+1:		andi	r16, 0xf0					; do upper digit
+		ldi		r18, 0x10					; increment
+		add		r16, r18
+		cpi		r16, 0x60					; is upper digit 6
+		brne	9f							; if not we are done
+
+		clr		r16							; set bcd to zero
+		st		z+, r16						; store bcd and incremtn data ptr
+		ld		r16, z						; load miniute bcd
+
+
+		mov		r18, r16					; do lower digit
+		andi	r18, 0x0f					; mask digit
+		inc		r18							; incremnt
+		cpi		r18, 10						; is it 10 now
+		breq	1f							; if yes do upper digit
+
+		andi	r16, 0xf0					; mask upper digit
+		or		r16, r18						; copy lower digit
+		rjmp	9f							; done
+
+1:		andi	r16, 0xf0					; do upper digit
+		ldi		r18, 0x10					; increment
+		add		r16, r18
+		cpi		r16, 0x60					; is upper digit 6
+		brne	9f							; if not we are done
+
+		clr		r16							; set bcd to zero
+		st		z+, r16						; store bcd andincrement data ptr
+		ld		r16, z						; load hour bcd
+
+		mov		r18, r16					; do lower digit
+		andi	r18, 0x0f					; mask digit
+		inc		r18							; incremnt
+		cpi		r18, 10						; is it 10 now
+		breq	1f							; if yes do upper digit
+
+		andi	r16, 0xf0					; mask upper digit
+		or		r16, r18					; copy lower digit
+		cpi		r16, 0x24					; is it 24 hour
+		brne	9f							; no then we are done
+		clr		r16							; zero hour
+		rjmp	9f
+
+1:		andi	r16, 0xf0					; do upper digit
+		ldi		r18, 0x10					; increment
+		add		r16, r18
+
+9:
+		st		z, r16						; store bcd
+
+		pop		r16							; restore working registers
+		pop		r17
+		pop		r18
+		pop		zl
+		pop		zh
+
+		reti
+

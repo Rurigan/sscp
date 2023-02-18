@@ -1,0 +1,23 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 17, 2023
+ *      Author: charlie
+ */
+
+#include <stdio.h>
+#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+#include "mercury2.h"
+
+void initialize()
+{
+
+}
+
+int main(void)
+{
+	initialize();
+	return 0;
+}
+

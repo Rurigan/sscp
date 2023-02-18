@@ -1,0 +1,23 @@
+/*
+ * timer.s
+ *
+ *  Created on: Feb 12, 2023
+ *      Author: charlie
+ */
+
+#define __SFR_OFFSET 0
+
+#include "de1soc.h"
+
+	.data
+
+	.comm cloc_count, 3
+
+	.text
+
+ClockISR: DEFISR(TM0INT)
+
+
+	reti
+
+

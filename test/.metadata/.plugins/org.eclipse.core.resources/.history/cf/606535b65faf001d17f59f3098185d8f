@@ -1,0 +1,17 @@
+/*
+ * m2ext.h
+ *
+ *  Created on: Feb 18, 2023
+ *      Author: charlie
+ */
+
+#ifndef M2EXT_H_
+#define M2EXT_H_
+
+extern void instrs( void );
+extern void instrs_end( void );
+extern unsigned test_instr( unsigned );
+extern void itsingle(int pTestInx);
+extern int itmain( void );
+
+#endif /* M2EXT_H_ */

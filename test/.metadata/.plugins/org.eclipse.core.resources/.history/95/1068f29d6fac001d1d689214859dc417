@@ -1,0 +1,91 @@
+/*
+ * keys.s
+ *
+ *  Created on: Feb 14, 2023
+ *      Author: charlie
+ */
+
+#define __SFR_OFFSET 0
+
+#include "de1soc.h"
+
+		.data
+
+TokenBuf:
+		.global TokenBuf
+
+TokenOut:
+
+		.global TokenOut
+		.skip	1
+
+
+TokenIn:
+
+		.global TokenIn
+		.skip	1
+
+		.skip	TokenBufSize
+
+
+		.text
+
+add_token:
+;
+; IN:	r16 = token
+;
+; destroy sreg, z, r17, r18
+;
+		ldi		zl, lo8(TokenBuf)				; point to token buffer
+		ldi		zh, hi8(TokenBuf)
+		ld		r17, z+							; get token out index
+		ld		r18, z+							; get token in index
+
+		inc		r18								; inc index
+		andi	r18, TokenInxMask				; and normalize
+		cp		r17, r18						; is buffer full
+		breq	9f								; yes - abort
+
+		movw	r20, zl							; save z register
+
+		add		zl, r18							; point to token in buffer
+		adc		zl, rnull
+		st		z, r16							; put token
+
+		movw	zl, r20							; restore z reg
+
+9:		st		-z, r18							; save token in index
+		st		-z, r17							; save token out index
+
+		ret
+
+
+
+KeysISR: DEFISR(KEYINT)
+
+		push	r16
+		push	r17
+		in		r17, SREG
+
+
+
+		out		SREG, r17
+		pop		r17
+		pop		r16
+
+		reti
+
+
+SwitchISR: DEFISR(SWINT)
+
+		push	r16
+		push	r17
+		in		r17, SREG
+
+
+
+		out		SREG, r17
+		pop		r17
+		pop		r16
+
+		reti

@@ -1,0 +1,15 @@
+/*
+ * timer.s
+ *
+ *  Created on: Feb 12, 2023
+ *      Author: charlie
+ */
+
+	.dseg
+
+	.byte	1
+	.byte	2
+	.byte	3.
+
+
+

@@ -1,0 +1,20 @@
+16:50:51 **** Incremental Build of configuration Debug for project itest ****
+make all 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega324p itest.elf
+AVR Memory Usage
+----------------
+Device: atmega324p
+
+Program:    4858 bytes (14.8% Full)
+(.text + .data + .bootloader)
+
+Data:        333 bytes (16.3% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+16:50:51 Build Finished. 0 errors, 0 warnings. (took 108ms)
+

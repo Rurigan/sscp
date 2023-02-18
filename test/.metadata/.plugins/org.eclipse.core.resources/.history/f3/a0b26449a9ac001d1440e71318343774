@@ -1,0 +1,154 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 11, 2023
+ *      Author: charlie
+ */
+
+
+#include <stdio.h>
+#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+#include "de1soc.h"
+#include "d1sext.h"
+
+
+FILE io_stream = FDEV_SETUP_STREAM(s0_txchar, s0_rxchar, _FDEV_SETUP_RW);
+
+
+void initialize()
+{
+	// disable segment digits
+
+	for (int i = 0; i < 6; ++i)
+		seg7_put(i, i);
+
+	// initialize key and switch
+
+	TokenIn = 0;
+	TokenOut = 0;
+
+	SaveKeys = KEYIN;
+	SaveSwitch = SWIN;
+
+	KEYINTMSK = 0xff;
+	SWINTMSK = 0xff;
+
+	// initialize clock
+
+	ClockCount[0] = 0x00;
+	ClockCount[1] = 0x00;
+	ClockCount[2] = 0x00;
+
+	TM0CNTL	= 0x3f;	// count 39.999 + 1 = 40.000
+	TM0CNTH	= 0x9c;
+	TM0CNTM	= 0x31;	// multiply 49 + 1 = 50 * 40.000 = 2.000.000 - one second resolution
+
+	// initialize I/O
+
+    stdout = &io_stream;
+    stdin  = &io_stream;
+
+	//UTLPORT = ((1 << ENASER0) | (1 << SER0FLOW) | (1 << ENATM0));
+	UTLPORT = ((1 << ENASER0) | (1 << ENATM0));
+	INTMASK = ((1 << IMTM0) | (1 << IMKEY) | (1 << IMSW));
+
+	sei();
+}
+
+
+void update_clock()
+{
+	seg7_put(0, ClockCount[0] & 0x0f);
+	seg7_put(1, ClockCount[0] >> 4);
+	seg7_put(2, ClockCount[1] & 0x0f);
+	seg7_put(3, ClockCount[1] >> 4);
+	seg7_put(4, ClockCount[2] & 0x0f);
+	seg7_put(5, ClockCount[2] >> 4);
+}
+
+const char splash[] PROGMEM = "\r\n\n*** test ***\r\n\n";
+const char overflow[] PROGMEM = "\r\n\n--- overflow --- %x %d\r\n\n";
+const char nl[] PROGMEM = "\r\n";
+const char bittick[] PROGMEM = "bittick = %u\r\n";
+const char cntmsg[] PROGMEM = "count = %u mult = %u\r\n";
+const char keyDNmsg[] PROGMEM = "key down   %d\r\n";
+const char keyUPmsg[] PROGMEM = "key up     %d\r\n";
+const char swONmsg[] PROGMEM =  "switch on  %d\r\n";
+const char swOFFmsg[] PROGMEM = "switch off %d\r\n";
+
+int main()
+{
+	initialize();
+
+	printf_P(splash);
+
+	for(char c = 0x20; c < 127; ++c)
+		putchar(c);
+
+	printf_P(nl);
+	printf_P(nl);
+
+	printf_P(bittick, (SER0BTH << 8) + SER0BTL);
+	printf_P(cntmsg, (TM0CNTH << 8) + TM0CNTL, TM0CNTM);
+
+
+	printf_P(nl);
+
+	printf_P(nl);
+
+	while (1)
+	{
+/*
+		if (s0_char_ready())
+		{
+			unsigned int stat = SER0STAT;
+
+			if ((stat & (1 << SER0RXOFL)) != 0)
+			{
+					printf_P(overflow, stat, stat & (1 << SER0RXOFL));
+			}
+
+			char c = getchar();
+
+			if ((c > 31) && (c < 128))
+					putchar(c);
+		}
+*/
+		unsigned char token = RemoveToken();
+
+		switch (token & 0x0f)
+		{
+			case KeyDownToken :
+
+				printf_P(keyDNmsg,  (token >> 4) & 0x0f);
+				break;
+
+			case KeyUpToken :
+
+				printf_P(keyUPmsg,  (token >> 4) & 0x0f);
+				break;
+
+			case SwitchOnToken:
+
+				printf_P(swONmsg, (token >> 4) & 0x0f);
+				break;
+
+			case SwitchOffToken:
+
+				printf_P(swOFFmsg, (token >> 4) & 0x0f);
+				break;
+
+			case ClockToken:
+
+				update_clock();
+				break;
+
+			default:
+
+				break;
+		}
+	}
+
+	return 0;
+}

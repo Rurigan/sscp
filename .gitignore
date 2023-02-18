@@ -1,3 +1,22 @@
+# Eclipse
+Debug
+
+# misc 
+*.bak
+
+# quartus
+db
+incremental_db
+output_files
+simulation
+soc_system
+hps_isw_handoff
+c5_pin_model_dump.txt
+hps_sdram_p0_all_pins.txt
+hps_sdram_p0_summary.csv
+ver/mercury2
+
+
 # Prerequisites
 *.d
 
@@ -50,3 +69,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+

@@ -1,0 +1,20 @@
+00:43:58 **** Incremental Build of configuration Debug for project mercury2 ****
+make all 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega324p mercury2.elf
+AVR Memory Usage
+----------------
+Device: atmega324p
+
+Program:    4464 bytes (13.6% Full)
+(.text + .data + .bootloader)
+
+Data:        125 bytes (6.1% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+00:43:58 Build Finished. 0 errors, 0 warnings. (took 118ms)
+

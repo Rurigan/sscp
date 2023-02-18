@@ -1,0 +1,131 @@
+/*
+ * keys.s
+ *
+ *  Created on: Feb 14, 2023
+ *      Author: charlie
+ */
+
+#define __SFR_OFFSET 0
+
+#include "de1soc.h"
+
+		.data
+
+TokenBuf:
+		.global TokenBuf
+
+TokenOut:
+
+		.global TokenOut
+		.skip	1
+
+
+TokenIn:
+
+		.global TokenIn
+		.skip	1
+
+		.skip	TokenBufSize
+
+
+		.text
+
+RemoveToken:
+;
+; OUT:	r24 = token
+;
+; destroy sreg, z, r18, r19, r20, r21, r22
+;
+		ldi		zl, lo8(TokenBuf)				; point to token buffer
+		ldi		zh, hi8(TokenBuf)
+		clr		r24								; null token
+		in		r22, SREG						; save interrupt flag
+		cli										; disbale interrupt
+		ld		r18, z+							; get token out index
+		ld		r19, z+							; get token in index
+
+		inc		r18								; inc index
+		andi	r18, TokenInxMask				; and normalize
+		cp		r18, r19						; is buffer empty
+		breq	9f								; yes - abort
+
+
+		movw	r20, zl							; save z register
+
+		add		zl, r18							; point to token in buffer
+		adc		zl, rnull
+		ld		r24, z							; put token
+
+		movw	zl, r20							; restore z reg
+
+
+		st		-z, r19							; save token in index
+		st		-z, r18							; save token out index
+9:
+		out		SREG, r22						; restore interrupt flag
+		ret
+
+
+AddToken:
+;
+; IN:	r24 = token
+;
+; destroy sreg, z, r18, r19, r20, r21, r22
+;
+		ldi		zl, lo8(TokenBuf)				; point to token buffer
+		ldi		zh, hi8(TokenBuf)
+		in		r22, SREG						; save interrupt flag
+		cli										; disbale interrupt
+		ld		r18, z+							; get token out index
+		ld		r19, z+							; get token in index
+
+		inc		r19								; inc index
+		andi	r19, TokenInxMask				; and normalize
+		cp		r18, r19						; is buffer full
+		breq	9f								; yes - abort
+
+		movw	r20, zl							; save z register
+
+		add		zl, r19							; point to token in buffer
+		adc		zl, rnull
+		st		z, r24							; put token
+
+		movw	zl, r20							; restore z reg
+
+		st		-z, r19							; save token in index
+		st		-z, r18							; save token out index
+9:
+		out		SREG, r22						; restore interrupt flag
+		ret
+
+
+
+
+KeysISR: DEFISR(KEYINT)
+
+		push	r16
+		push	r17
+		in		r17, SREG
+
+
+
+		out		SREG, r17
+		pop		r17
+		pop		r16
+
+		reti
+
+
+SwitchISR: DEFISR(SWINT)
+
+		push	r16
+		push	r17
+		in		r17, SREG
+
+
+
+		out		SREG, r17
+		pop		r17
+		pop		r16
+
+		reti

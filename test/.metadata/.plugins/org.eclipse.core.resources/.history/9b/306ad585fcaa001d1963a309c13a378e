@@ -1,0 +1,18 @@
+/*
+ * timer.s
+ *
+ *  Created on: Feb 12, 2023
+ *      Author: charlie
+ */
+
+	.data
+
+	.byte	1
+	.byte	2
+	.byte	3
+
+	.text
+
+
+
+

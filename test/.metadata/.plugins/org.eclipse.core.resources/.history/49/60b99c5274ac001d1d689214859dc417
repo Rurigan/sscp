@@ -1,0 +1,69 @@
+/*
+ * de1soc.h
+ *
+ *  Created on: Feb 11, 2023
+ *      Author: charlie
+ */
+
+#ifndef DE1SOC_H_
+#define DE1SOC_H_
+
+//#define __SFR_OFFSET 0
+
+#include <avr/io.h>
+
+#define rnull		r1
+#define DEFISR(n) _VECTOR(n): .global _VECTOR(n)
+
+#define INTMASK		_SFR_IO8(1)
+#define IMSER0		2
+#define IMTM0		5
+#define IMKEY		6
+#define IMSW		7
+
+#define UTLPORT		_SFR_IO8(2)
+#define ENATM0		0
+#define ENASER0		1
+#define SER0FLOW	2
+#define SER0INT		3
+
+
+#define SER0DATA	_SFR_IO8(10)
+#define SER0STAT	_SFR_IO8(11)
+#define SER0BTL		_SFR_IO8(12)
+#define SER0BTH		_SFR_IO8(13)
+#define SER0RXINT	7
+#define SER0TXINT	8
+
+#define SER0RXRDY	0
+#define SER0RXOFL	1
+#define SER0TXRDY	2
+
+#define SER0NDTR	4
+#define SER0NCTS	5
+#define SER0RXBUSY	6
+#define SER0TXBUSY	7
+
+#define TM0CNTL		_SFR_IO8(14)
+#define TM0CNTH		_SFR_IO8(15)
+#define TM0CNTM		_SFR_IO8(16)
+#define TM0INT		6
+
+#define	KEYIN		_SFR_IO8(18)
+#define KEYINTMSK	_SFR_IO8(18)
+#define KEYINT		4
+
+#define	SWIN		_SFR_IO8(19)
+#define SWINTMSK	_SFR_IO8(19)
+#define SWINT		5
+
+#define LEDPORT		_SFR_IO8(20)
+
+#define SEGBASE		_SFR_IO8(64)
+
+
+#define TokenBufSize 16
+#define TokenInxMask 0x0f
+
+
+#endif /* DE1SOC_H_ */

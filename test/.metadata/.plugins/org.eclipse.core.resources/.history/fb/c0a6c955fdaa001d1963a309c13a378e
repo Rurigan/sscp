@@ -1,0 +1,17 @@
+/*
+ * d1sext.h
+ *
+ *  Created on: Feb 11, 2023
+ *      Author: charlie
+ */
+
+#ifndef D1SEXT_H_
+#define D1SEXT_H_
+
+extern volatile int clock_count;
+
+extern void seg7_put(int segment_no, int value);
+extern int s0_txchar(char c, FILE *stream);
+extern int s0_rxchar(FILE *stream);
+
+#endif /* D1SEXT_H_ */

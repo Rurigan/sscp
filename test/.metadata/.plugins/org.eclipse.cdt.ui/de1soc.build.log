@@ -1,0 +1,20 @@
+00:03:37 **** Incremental Build of configuration Debug for project de1soc ****
+make all 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega324p de1soc.elf
+AVR Memory Usage
+----------------
+Device: atmega324p
+
+Program:    5808 bytes (17.7% Full)
+(.text + .data + .bootloader)
+
+Data:        149 bytes (7.3% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+00:03:37 Build Finished. 0 errors, 0 warnings. (took 110ms)
+
