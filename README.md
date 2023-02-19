@@ -1,4 +1,4 @@
-# SSCP - An AVR implementation in VHDL
+# SSCP - An other AVR implementation in VHDL
 
 currently working on this file
 
