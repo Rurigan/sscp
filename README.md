@@ -1,6 +1,14 @@
 # SSCP - An other AVR implementation in VHDL
 
-currently working on this file
+Any comments are welcome. If you find this useful please let me hear. And if you have any questions or suggestions do not hesitate to write me.
+
+### Instructions
+
+These instructions are not implemented:  EICALL, EIJMP, ELMP, FMUL, FMULS, FMULSU, LAC, LAS, LAT, MULS, MULSU, TST,WDR, XCH
+
+### Registers
+
+None of the RAMP registers or associated instructions are implemented.  
 
 ### Credits 
 
